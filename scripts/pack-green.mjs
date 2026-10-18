@@ -61,19 +61,37 @@ fs.copyFileSync(path.join(ROOT, 'package.json'), path.join(appRoot, 'package.jso
 copyDir(path.join(ROOT, 'dist'), path.join(appRoot, 'dist'));
 copyDir(path.join(ROOT, 'dist-electron'), path.join(appRoot, 'dist-electron'));
 
-// 只带运行期依赖：electron-store 及其依赖树
-const runtimeDeps = Object.keys(pkg.dependencies ?? {});
+// 运行期依赖必须带上完整传递依赖树（electron-store → conf → ajv …）
+// 只复制 package.json 里的顶层依赖会让解压到任意目录后启动失败。
+const nmRoot = path.join(ROOT, 'node_modules');
+
+function listProductionDeps() {
+  // 直接读 package-lock.json：npm.cmd 在 Node 24 下用 execFileSync 调用会抛 EINVAL，
+  // 而 lock 文件已完整记录生产依赖树（含嵌套 node_modules）。
+  const lock = JSON.parse(fs.readFileSync(path.join(ROOT, 'package-lock.json'), 'utf8'));
+  return Object.entries(lock.packages ?? {})
+    .filter(([key, meta]) => key.startsWith('node_modules/') && !meta.dev && !meta.devOptional)
+    .map(([key]) => key.slice('node_modules/'.length))
+    .sort((a, b) => a.length - b.length);
+}
+
 const nmDest = path.join(appRoot, 'node_modules');
 fs.mkdirSync(nmDest, { recursive: true });
-for (const dep of runtimeDeps) {
-  const from = path.join(ROOT, 'node_modules', dep);
-  if (!fs.existsSync(from)) {
-    console.error(`\n依赖 ${dep} 未安装，请先 npm install`);
-    process.exit(1);
-  }
-  copyDir(from, path.join(nmDest, dep));
+let copied = 0;
+for (const rel of listProductionDeps()) {
+  const to = path.join(nmDest, rel);
+  // 父级包复制时已连带其内部 node_modules，跳过可避免重复拷贝
+  if (fs.existsSync(to)) continue;
+  const from = path.join(nmRoot, rel);
+  if (!fs.existsSync(from)) continue;
+  copyDir(from, to);
+  copied++;
 }
-log(`应用代码 + ${runtimeDeps.length} 个运行期依赖`);
+if (!fs.existsSync(path.join(nmDest, 'electron-store'))) {
+  console.error('\n运行期依赖缺失，请先执行 npm install');
+  process.exit(1);
+}
+log(`应用代码 + ${copied} 个依赖包`);
 
 // package.json 只保留运行必需字段（打包后不需要 devDependencies）
 const slimPkg = {
