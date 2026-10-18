@@ -1,0 +1,131 @@
+
+/* 强调色主题：只改这三个变量，brand-* 类名自动跟随 */
+:root,
+[data-accent='pink'] {
+  --brand-400: 247 143 179;
+  --brand-500: 243 103 155;
+  --brand-600: 224 72 127;
+}
+[data-accent='blue'] {
+  --brand-400: 125 180 255;
+  --brand-500: 79 140 245;
+  --brand-600: 51 111 214;
+}
+[data-accent='green'] {
+  --brand-400: 110 214 166;
+  --brand-500: 54 189 133;
+  --brand-600: 35 160 109;
+}
+[data-accent='purple'] {
+  --brand-400: 186 156 255;
+  --brand-500: 147 106 255;
+  --brand-600: 121 78 225;
+}
+[data-accent='orange'] {
+  --brand-400: 255 179 102;
+  --brand-500: 246 146 48;
+  --brand-600: 219 118 20;
+}
+[data-accent='teal'] {
+  --brand-400: 110 214 214;
+  --brand-500: 45 184 184;
+  --brand-600: 25 154 154;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-ink-950 text-ink-100 antialiased;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+    overflow: hidden;
+  }
+  ::selection {
+    @apply bg-brand-500/30;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-ink-700;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-ink-600;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* 浅色主题：翻转 ink 色板的明暗，组件无需改类名 */
+[data-theme='light'] {
+  --tw-prose-invert: initial;
+}
+[data-theme='light'] body {
+  background: #f7f8fa;
+  color: #1b1f27;
+}
+[data-theme='light'] .bg-ink-950,
+[data-theme='light'] .bg-ink-950\/60 {
+  background-color: #f7f8fa;
+}
+[data-theme='light'] .bg-ink-900,
+[data-theme='light'] .bg-ink-900\/70,
+[data-theme='light'] .bg-ink-900\/60,
+[data-theme='light'] .bg-ink-900\/50,
+[data-theme='light'] .bg-ink-900\/40 {
+  background-color: #ffffff;
+}
+[data-theme='light'] .bg-ink-800,
+[data-theme='light'] .bg-ink-800\/80,
+[data-theme='light'] .bg-ink-800\/70,
+[data-theme='light'] .bg-ink-800\/60 {
+  background-color: #e9ecf1;
+}
+[data-theme='light'] .border-ink-800,
+[data-theme='light'] .border-ink-800\/80,
+[data-theme='light'] .border-ink-800\/70,
+[data-theme='light'] .border-ink-700 {
+  border-color: #e2e6ec;
+}
+[data-theme='light'] .text-ink-50,
+[data-theme='light'] .text-ink-100,
+[data-theme='light'] .text-ink-200 {
+  color: #1b1f27;
+}
+[data-theme='light'] .text-ink-300 {
+  color: #3a4351;
+}
+[data-theme='light'] .text-ink-400 {
+  color: #5b6577;
+}
+[data-theme='light'] .text-ink-500 {
+  color: #78828f;
+}
+[data-theme='light'] .text-ink-600 {
+  color: #98a1ad;
+}
+/* 浅色下悬停要“略微加深”，而不是变白：评论行等卡片内部本来就接近白色 */
+[data-theme='light'] .hover\:bg-ink-900:hover,
+[data-theme='light'] .hover\:bg-ink-900\/40:hover,
+[data-theme='light'] .hover\:bg-ink-900\/50:hover,
+[data-theme='light'] .hover\:bg-ink-900\/60:hover,
+[data-theme='light'] .hover\:bg-ink-900\/70:hover,
+[data-theme='light'] .hover\:bg-ink-800:hover,
+[data-theme='light'] .hover\:bg-ink-800\/60:hover,
+[data-theme='light'] .hover\:bg-ink-800\/70:hover,
+[data-theme='light'] .hover\:bg-ink-800\/80:hover {
+  background-color: #eef1f5;
+}
+[data-theme='light'] .hover\:text-ink-100:hover,
+[data-theme='light'] .hover\:text-ink-200:hover {
+  color: #10141a;
+}
