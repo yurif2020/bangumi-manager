@@ -107,6 +107,8 @@ export function EpisodeList({ episodes, watched, onToggle, loading }: Props) {
         const isWatched = watched.has(ep.id);
         const open = openId === ep.id;
         const title = ep.nameCn || ep.name || `第 ${ep.sort} 集`;
+        // 0 本篇，1 SP，2 OP，3 ED …
+        const kind = ep.type === 1 ? 'SP' : ep.type === 2 ? 'OP' : ep.type === 3 ? 'ED' : '';
         return (
           <li key={ep.id}>
             <div
@@ -133,7 +135,7 @@ export function EpisodeList({ episodes, watched, onToggle, loading }: Props) {
                 className="flex min-w-0 flex-1 items-center gap-3 text-left"
               >
                 <span className="w-10 shrink-0 text-xs tabular-nums text-ink-500">
-                  {ep.sort ? ep.sort.toFixed(ep.sort % 1 === 0 ? 0 : 1) : '-'}
+                  {kind || (ep.sort ? ep.sort.toFixed(ep.sort % 1 === 0 ? 0 : 1) : '-')}
                 </span>
                 <span className={`min-w-0 flex-1 truncate ${isWatched ? 'line-through decoration-ink-600' : ''}`}>
                   {title}

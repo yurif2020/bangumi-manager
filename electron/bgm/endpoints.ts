@@ -170,11 +170,15 @@ export async function getSubjectDetail(id: number): Promise<Subject> {
 }
 
 export async function getEpisodes(subjectId: number): Promise<Episode[]> {
+  // 不能传 type=0：那样只会返回本篇，SP 会被整段丢掉
   const res = await apiFetch<{ data?: RawEpisode[] }>('/episodes', {
-    query: { subject_id: subjectId, type: 0, limit: 200 },
+    query: { subject_id: subjectId, limit: 200 },
     auth: false,
   });
-  const eps = (res.data ?? []).map((e) => normalizeEpisode(e, subjectId));
+  // 只要本篇(0)与 SP(1)；OP/ED 等不展示
+  const eps = (res.data ?? [])
+    .filter((e) => e.type === undefined || e.type === 0 || e.type === 1)
+    .map((e) => normalizeEpisode(e, subjectId));
   if (!eps.length) {
     const p1 = await fetchP1Episodes(subjectId);
     return p1.map((e) => normalizeEpisode(e, subjectId));

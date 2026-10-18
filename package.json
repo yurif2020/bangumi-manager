@@ -1,6 +1,6 @@
 {
   "name": "bangumi-manager",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "简洁的 Bangumi 番剧管理桌面端",
   "main": "dist-electron/main.js",

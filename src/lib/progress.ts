@@ -14,7 +14,8 @@ export function buildEpisodeView(bundle: { episodes: Episode[]; watched: number[
   const main = bundle.episodes.filter((e) => e.type === 0);
   const total = subject?.totalEpisodes || subject?.eps || main.length || bundle.episodes.length;
   const watchedSet = new Set(bundle.watched);
-  const next = bundle.episodes.find((e) => !watchedSet.has(e.id));
+  // 下一集只看本篇：SP 不应被当成正片进度推给收藏
+  const next = nextUnwatched(main, watchedSet);
   return {
     episodes: bundle.episodes,
     watched: watchedSet,
