@@ -104,6 +104,9 @@ bgmtv-helper://watched?episodeId=1227087        # 只知道单集 ID 时
 Electron 33 + React 18 + TypeScript + Vite + Tailwind CSS。
 主进程按 `auth / bgm / bridge / cache / ipc / store / sync` 分模块，渲染进程按 `views / components / hooks` 分层。
 
+## 友情链接
+[LINUX DO](https://linux.do/) — 真诚分享、友好讨论的技术社区，本项目的交流与反馈也发布于此
+
 ## 许可
 
 [MIT](LICENSE)。本项目与 Bangumi（bgm.tv）官方无关联，仅使用其公开 API。
